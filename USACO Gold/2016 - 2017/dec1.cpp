@@ -5,7 +5,6 @@ using namespace std;
 #define pb push_back
 #define fi first
 #define se second
-#define sz(x) (int)(x).size()
 #define FOR(i, a, b) for(int i = a; i < b; i++)
 #define odd(x) ((x) % (2))
 #define fastio ios_base::sync_with_stdio(false), cin.tie(0);
@@ -15,41 +14,50 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 const ll MOD = 1e9 + 7;
 
-int n;
-pii coords[1005];
+vi adj[1005];
 bool vis[1005];
-int dfs(int u, int x) {
+int dfs(int u, int sz) {
     vis[u] = true;
-    int currSize = 1;
-    FOR(v, 0, n) {
-        if (vis[v]) {continue;}
-        int distX = abs(coords[u].fi - coords[v].fi);
-        int distY = abs(coords[u].se - coords[v].se);
-        if ((distX*distX + distY*distY) <= x) {
-            currSize += dfs(v, x);
-        }
+    for (int v : adj[u]) {
+        if (!vis[v]) {sz += dfs(v, 1);}
     }
-    return currSize;
+    return sz;
 }
 int main() {
     fastio;
     fileio;
+    int n;
     cin >> n;
+    pii cows[n];
     FOR(i, 0, n) {
-        cin >> coords[i].fi >> coords[i].se;
+        cin >> cows[i].fi >> cows[i].se;
     }
-    int low = 1, high = 1e9;
-    int ans;
-    while (low <= high) {
-        int mid = (low + high)/2;
-        FOR(i, 0, n) {vis[i] = false;}
-        if (dfs(0, mid) == n) {
-            ans = mid;
-            high = mid - 1; 
+    ll left = 0, right = 1e10;
+    ll best = right;
+    while (left <= right) {
+        ll mid = (left+right)/2;
+        FOR(i, 0, 1005) {
+            adj[i].clear();
+        }
+        FOR(i, 0, n) {
+            vis[i] = false;
+            FOR(j, i+1, n) {
+                ll distX = cows[i].fi - cows[j].fi;
+                ll distY = cows[i].se - cows[j].se;
+                ll totalDist = distX*distX + distY*distY;
+                if (totalDist <= mid) {
+                    adj[i].pb(j);
+                    adj[j].pb(i);
+                }
+            }
+        }
+        if (dfs(0, 1) == n) {
+            best = mid;
+            right = mid - 1;
         } else {
-            low = mid + 1;
+            left = mid + 1;
         }
     }
-    cout << ans << "\n";
+    cout << best << "\n";
     return 0;
 }
