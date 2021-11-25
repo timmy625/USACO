@@ -5,7 +5,6 @@ using namespace std;
 #define pb push_back
 #define fi first
 #define se second
-#define sz(x) (int)(x).size()
 #define FOR(i, a, b) for(int i = a; i < b; i++)
 #define odd(x) ((x) % (2))
 #define fastio ios_base::sync_with_stdio(false), cin.tie(0);
@@ -15,24 +14,23 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 const ll MOD = 1e9 + 7;
 
-bool vis[100005];
-bool colors[100005];
-vector< pair<int, char> > edges[100005];
-
-bool dfs(int u, bool color) {
-    bool ok = true;
+vector< pair<int, char> > adj[100005];
+bool type[100005] = {};
+bool vis[100005] = {};
+string ans = "1";
+void dfs(int u) {
     vis[u] = true;
-    colors[u] = color;
-    for (pair<int, char> p : edges[u]) {
+    for (pair<int, char> p : adj[u]) {
         if (vis[p.fi]) {
-            if (p.se == 'S' && colors[u] != colors[p.fi]) {ok = false;}
-            else if (p.se == 'D' && colors[u] == colors[p.fi]) {ok = false;}
+            if (p.se == 'S' && type[p.fi] != type[u]) {ans = "-";}
+            else if (p.se == 'D' && type[p.fi] == type[u]) {ans = "-";}
+        } else {
+            if (p.se == 'S') {type[p.fi] = type[u];}
+            else {type[p.fi] = !type[u];}
+            dfs(p.fi);
         }
-        else {ok = ok && dfs(p.fi, (p.se == 'S' ? color : !color));}
     }
-    return ok;
 }
-
 int main() {
     fastio;
     fileio;
@@ -42,23 +40,16 @@ int main() {
         char c;
         int a, b;
         cin >> c >> a >> b;
-        edges[a-1].pb({b-1, c});
-        edges[b-1].pb({a-1, c});
+        adj[a-1].pb({b-1, c});
+        adj[b-1].pb({a-1, c});
     }
-    int ans = 0;
     FOR(i, 0, n) {
         if (!vis[i]) {
-            if (dfs(i, true)) {ans++;}
-            else {ans = 0; break;}
+            ans += '0';
+            type[i] = true;
+            dfs(i);
         }
     }
-    if (ans != 0) {
-        cout << 1;
-        while (ans--) {cout << 0;}
-        cout << "\n"; 
-    } else {
-        cout << 0 << "\n";
-    }
+    cout << (ans[0] == '-' ? "0" : ans) << "\n";
     return 0;
 }
- 

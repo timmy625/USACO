@@ -17,22 +17,18 @@ typedef pair<int, int> pii;
 typedef vector<int> vi;
 const ll MOD = 1e9 + 7;
 
-int ans = 0;
-int n;
+int ans = 0, n;
 int play(int a[], int b[], int i) {
 	ans = max(ans, a[i] + b[n] - b[i]);
 }
 int main() {
     fastio;
     fileio;
-        
-    
-	cin >> n;
 
+	cin >> n;
 	int H[n+1]; H[0] = 0;
 	int P[n+1]; P[0] = 0;
 	int S[n+1]; S[0] = 0;
-
 	FOR(i, 0, n) {
 		H[i+1] = H[i];
 		P[i+1] = P[i];
@@ -43,8 +39,6 @@ int main() {
 		else if (c == 'P') {P[i+1]++;}
 		else {S[i+1]++;}
 	}
-
-
 	FOR(i, 0, n) {
 		play(H, P, i);
 		play(H, S, i);

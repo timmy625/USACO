@@ -23,8 +23,7 @@ int main() {
         
     int n, q;
 	cin >> n >> q;
-	int h[n+1], g[n+1], j[n+1];
-	h[0] = 0, g[0] = 0, j[0] = 0;
+	int h[n+1] = {}, g[n+1] = {}, j[n+1 = {};
 	int hCount = 0, gCount = 0, jCount = 0;
 	FOR(i, 0, n) {
 		int x;
@@ -40,7 +39,6 @@ int main() {
 	FOR(i, 0, q) {
 		int a, b;
 		cin >> a >> b;
-
 		cout << h[b] - h[a-1] << " " << g[b] - g[a-1] << " " << j[b] - j[a-1] << "\n";
 	}
     return 0;
